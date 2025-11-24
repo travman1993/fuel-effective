@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Gas Efficiency Planner</title>
+    <meta name="description" content="Learn about Gas Efficiency Planner and how it helps commuters, road trippers, and gig workers calculate real fuel costs.">
+    <meta name="theme-color" content="#0d4a5e">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0d4a5e;
+            --primary-medium: #1a6b7f;
+            --primary-light: #2a8fa3;
+            --accent-warm: #e8a81b;
+            --accent-warm-light: #f0b844;
+            --neutral-bg: #f8f9fa;
+            --neutral-light: #f0f2f5;
+            --neutral-text: #2c3e50;
+            --neutral-muted: #7a8a99;
+            --shadow-sm: 0 2px 8px rgba(13, 74, 94, 0.08);
+            --shadow-md: 0 8px 24px rgba(13, 74, 94, 0.12);
+            --shadow-lg: 0 16px 48px rgba(13, 74, 94, 0.15);
+            --transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--neutral-text);
+            background-color: #ffffff;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            color: var(--primary-medium);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--neutral-text);
+            line-height: 1.8;
+        }
+
+        a {
+            color: var(--primary-medium);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--accent-warm);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.35rem;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+        }
+
+        .logo-icon {
+            font-size: 1.75rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-warm);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-dark);
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1.5rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        main {
+            padding: 4rem 0;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 4rem 1.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .page-header h1 {
+            color: white;
+        }
+
+        .page-header p {
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 1rem auto 0;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .content-card h2 {
+            margin-top: 0;
+        }
+
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 3rem 1.5rem 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-warm);
+        }
+
+        .footer-copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 2.5rem 0;
+            }
+
+            .page-header {
+                padding: 3rem 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .content-card {
+                padding: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">⛽</span>
+                <div>Gas Efficiency Planner</div>
+            </div>
+            <nav id="navbar">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="index.html#tips-section">Helpful Hints</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="cookies.html">Cookies</a>
+            </nav>
+            <button class="mobile-nav-toggle" id="nav-toggle">☰</button>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1>About Us</h1>
+        <p>Learn the story behind Gas Efficiency Planner and discover how we help drivers save money on fuel.</p>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="content-card">
+                <h2>Our Mission</h2>
+                <p>Gas Efficiency Planner was created to solve a simple but important problem: helping drivers understand their real fuel costs <em>before</em> they hit the road. Whether you're planning a daily commute, organizing a road trip, or calculating expenses for gig work, accurate fuel cost estimates empower better decisions.</p>
+                <p>We believe that transparency in transportation costs leads to smarter choices—whether that's optimizing your route, understanding the true cost of your commute, or budgeting for a cross-country adventure.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Who We Help</h2>
+                <h3>Daily Commuters</h3>
+                <p>If you drive to work every day, you know fuel costs add up fast. Our calculator helps you estimate monthly expenses and discover the real annual impact of your commute. Many commuters are surprised by how much they actually spend on gas.</p>
+
+                <h3>Road Trippers</h3>
+                <p>Planning a weekend getaway or a cross-country adventure? Before you pack the car, use our tool to estimate fuel costs for the exact distance and gas prices in your route. This helps you budget accurately and avoid unpleasant surprises at the pump.</p>
+
+                <h3>Gig Workers & Delivery Drivers</h3>
+                <p>For those earning money through driving—whether rideshare, delivery, or other services—fuel costs are a critical business expense. Our calculator makes it easy to understand your per-mile fuel costs and factor them into your earning calculations.</p>
+
+                <h3>Fleet Managers</h3>
+                <p>Managing multiple vehicles? Our simple, fast calculator can help you estimate fleet fuel expenses and identify opportunities for efficiency improvements across your operations.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Why We Built This</h2>
+                <p>Most drivers underestimate their fuel costs. A lengthy commute that seems reasonable in the morning adds thousands of dollars to your annual expenses—money that could go toward savings, investments, or other priorities. By providing quick, accurate fuel cost calculations, we help you make informed decisions about your driving habits and long-term transportation plans.</p>
+                <p>Our tool is completely free, runs instantly in your browser, and requires no sign-up or data sharing. Just enter your vehicle's MPG, the gas price, and your distance, and you'll get an immediate estimate.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>How It Works</h2>
+                <p>Gas Efficiency Planner uses a simple formula: your trip distance divided by your vehicle's MPG gives you gallons used, which we multiply by the current gas price to show your total fuel cost. We also support commute scenarios with customizable parameters (days per week, weeks per month) so you can estimate monthly expenses. All calculations happen in your browser—no data is sent to our servers.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Beyond the Calculator</h2>
+                <p>Our site also includes practical tips for improving fuel efficiency. From checking tire pressure to avoiding aggressive acceleration, small changes in driving habits can significantly reduce fuel consumption and lower your costs. We regularly update these tips based on expert advice and real-world driving data.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="cookies.html">Cookies</a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 Gas Efficiency Planner. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const navToggle = document.getElementById('nav-toggle');
+        const navbar = document.getElementById('navbar');
+
+        navToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+        });
+
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

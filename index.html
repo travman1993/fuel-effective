@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Efficiency Planner | Calculate Your Fuel Costs Instantly</title>
+    <meta name="description" content="Quickly estimate how much gas you'll use and how much it'll cost for your daily commute, weekend trip, or any driving scenario.">
+    <meta name="theme-color" content="#0d4a5e">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== CSS Variables (Theme Configuration) ===== */
+        :root {
+            --primary-dark: #0d4a5e;
+            --primary-medium: #1a6b7f;
+            --primary-light: #2a8fa3;
+            --accent-warm: #e8a81b;
+            --accent-warm-light: #f0b844;
+            --neutral-bg: #f8f9fa;
+            --neutral-light: #f0f2f5;
+            --neutral-text: #2c3e50;
+            --neutral-muted: #7a8a99;
+            --success: #22c55e;
+            --error: #ef4444;
+            --shadow-sm: 0 2px 8px rgba(13, 74, 94, 0.08);
+            --shadow-md: 0 8px 24px rgba(13, 74, 94, 0.12);
+            --shadow-lg: 0 16px 48px rgba(13, 74, 94, 0.15);
+            --transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        /* ===== Reset & Base Styles ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--neutral-text);
+            background-color: #ffffff;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* ===== Typography ===== */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--primary-dark);
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            color: var(--primary-medium);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--neutral-text);
+        }
+
+        a {
+            color: var(--primary-medium);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--accent-warm);
+        }
+
+        /* ===== Header & Navigation ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.35rem;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+        }
+
+        .logo-icon {
+            font-size: 1.75rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-weight: 500;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .tagline {
+                display: block;
+            }
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex: 1;
+        }
+
+        nav a {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-warm);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile nav toggle (hidden on desktop) */
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-dark);
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1.5rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .header-container {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 6rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(232, 168, 27, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--neutral-text);
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent-warm);
+            color: var(--primary-dark);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 8px 24px rgba(232, 168, 27, 0.3);
+            font-family: 'Syne', sans-serif;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(232, 168, 27, 0.4);
+            background: var(--accent-warm-light);
+        }
+
+        .cta-button:active {
+            transform: translateY(-2px);
+        }
+
+        /* ===== Ad Slots ===== */
+        .ad-slot {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            border: 2px dashed #d0d0d0;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #999;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin: 2rem auto;
+            max-width: 100%;
+        }
+
+        /* ===== Container & Sections ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        section:nth-child(even) {
+            background: var(--neutral-bg);
+        }
+
+        /* ===== Calculator Section ===== */
+        .calculator-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: start;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .calculator-wrapper {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .calculator-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--neutral-light);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+            color: var(--neutral-text);
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-medium);
+            box-shadow: 0 0 0 3px rgba(26, 107, 127, 0.1);
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-medium);
+        }
+
+        .radio-item label,
+        .checkbox-item label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Syne', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-medium) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-light);
+            color: var(--primary-dark);
+            border: 2px solid var(--neutral-light);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--primary-medium);
+        }
+
+        /* ===== Results Card ===== */
+        .results-container {
+            display: none;
+            margin-top: 2rem;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .results-card {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border-left: 5px solid var(--accent-warm);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-item {
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+            color: var(--accent-warm);
+        }
+
+        .result-unit {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .results-summary {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fecaca;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--error);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== Helpful Tips Section ===== */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border-top: 4px solid var(--accent-warm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--accent-warm) 0%, transparent 70%);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tip-card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+        }
+
+        .tip-card p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            color: var(--neutral-muted);
+        }
+
+        /* ===== Sidebar Ad ===== */
+        .sidebar {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar {
+                display: block;
+            }
+
+            .sidebar .ad-slot {
+                position: sticky;
+                top: 120px;
+            }
+        }
+
+        /* ===== Back to Top Button ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-medium) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(13, 74, 94, 0.3);
+        }
+
+        @media (max-width: 640px) {
+            .back-to-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 44px;
+                height: 44px;
+                font-size: 1.25rem;
+            }
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 3rem 1.5rem 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-warm);
+        }
+
+        .footer-copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 768px) {
+            section {
+                padding: 3rem 0;
+            }
+
+            h2 {
+                margin-bottom: 1.25rem;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+                gap: 1.75rem;
+            }
+
+            .calculator-card {
+                padding: 1.75rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .radio-group,
+            .checkbox-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 15px;
+            }
+
+            section {
+                padding: 2.5rem 0;
+            }
+
+            .hero {
+                padding: 3.5rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .calculator-card {
+                padding: 1.5rem;
+            }
+
+            .result-value {
+                font-size: 2rem;
+            }
+
+            .results-grid {
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">⛽</span>
+                <div>
+                    <div>Gas Efficiency Planner</div>
+                    <div class="tagline">See your real fuel costs</div>
+                </div>
+            </div>
+            <nav id="navbar">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="#tips-section">Helpful Hints</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="cookies.html">Cookies</a>
+            </nav>
+            <button class="mobile-nav-toggle" id="nav-toggle">☰</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Plan Your Fuel Costs Before You Drive</h1>
+            <p>Quickly estimate how much gas you'll use and how much it'll cost for your daily commute, weekend trip, or any driving scenario.</p>
+            <button class="cta-button" onclick="document.getElementById('calculator-section').scrollIntoView({behavior:'smooth'})">Calculate Now</button>
+        </div>
+    </section>
+
+    <!-- Ad Slot 1: Top Banner -->
+    <div class="container">
+        <div class="ad-slot">Ad Space – Top Banner</div>
+    </div>
+
+    <!-- Ad Slot 2: Inline -->
+    <section>
+        <div class="container">
+            <div class="ad-slot">Ad Space – Inline (Between Hero & Calculator)</div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <main>
+        <section id="calculator-section">
+            <div class="container">
+                <h2 style="margin-bottom: 0.5rem;">Gas Cost Calculator</h2>
+                <p style="color: var(--neutral-muted); margin-bottom: 2rem;">Fill in your vehicle details and trip information to get instant fuel cost estimates.</p>
+                
+                <div class="calculator-wrapper">
+                    <!-- Calculator Card -->
+                    <div class="calculator-card">
+                        <div class="error-message" id="error-message"></div>
+
+                        <!-- Vehicle Info -->
+                        <div class="form-group">
+                            <label for="mpg">Vehicle MPG (Miles Per Gallon)</label>
+                            <input type="number" id="mpg" placeholder="e.g., 25" min="1" step="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gas-price">Current Gas Price Per Gallon ($)</label>
+                            <input type="number" id="gas-price" placeholder="e.g., 3.50" min="0.01" step="0.01">
+                        </div>
+
+                        <!-- Trip Distance -->
+                        <div class="form-group">
+                            <label>Trip Distance Type</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="distance-type-one-way" name="distance-type" value="one-way" checked>
+                                    <label for="distance-type-one-way">One-way</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="distance-type-round-trip" name="distance-type" value="round-trip">
+                                    <label for="distance-type-round-trip">Round-trip</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="distance">Distance (miles)</label>
+                            <input type="number" id="distance" placeholder="e.g., 25" min="0.1" step="0.1">
+                        </div>
+
+                        <!-- Scenario Type -->
+                        <div class="form-group">
+                            <label>What's Your Scenario?</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="scenario-trip" name="scenario" value="trip" checked>
+                                    <label for="scenario-trip">One-Time Trip</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="scenario-commute" name="scenario" value="commute">
+                                    <label for="scenario-commute">Daily Commute</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="scenario-custom" name="scenario" value="custom">
+                                    <label for="scenario-custom">Custom</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Commute Settings (hidden by default) -->
+                        <div id="commute-settings" style="display: none;">
+                            <div class="form-group">
+                                <label for="days-per-week">Days Per Week</label>
+                                <input type="number" id="days-per-week" placeholder="e.g., 5" min="1" max="7" value="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="weeks-per-month">Weeks Per Month</label>
+                                <input type="number" id="weeks-per-month" placeholder="e.g., 4" min="1" max="5" value="4">
+                            </div>
+                        </div>
+
+                        <!-- Custom Settings (hidden by default) -->
+                        <div id="custom-settings" style="display: none;">
+                            <div class="form-group">
+                                <label for="total-miles">Total Miles</label>
+                                <input type="number" id="total-miles" placeholder="e.g., 500" min="0.1" step="0.1">
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="calculateGasCost()">Calculate Cost</button>
+                            <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                        </div>
+
+                        <!-- Results -->
+                        <div class="results-container" id="results">
+                            <div class="results-card">
+                                <div class="results-grid">
+                                    <div class="result-item">
+                                        <div class="result-label">Gallons Used</div>
+                                        <div class="result-value" id="result-gallons">0</div>
+                                        <div class="result-unit">gal</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-label">Total Cost</div>
+                                        <div class="result-value" id="result-cost">$0</div>
+                                        <div class="result-unit">USD</div>
+                                    </div>
+                                    <div class="result-item" id="monthly-cost-item" style="display: none;">
+                                        <div class="result-label">Monthly Cost</div>
+                                        <div class="result-value" id="result-monthly">$0</div>
+                                        <div class="result-unit">USD</div>
+                                    </div>
+                                </div>
+                                <div class="results-summary" id="results-summary"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Ad Slot -->
+                    <div class="sidebar">
+                        <div class="ad-slot">Ad Space – Calculator Side</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Ad Slot 4: Before Tips Section -->
+    <section>
+        <div class="container">
+            <div class="ad-slot">Ad Space – Bottom Banner</div>
+        </div>
+    </section>
+
+    <!-- Helpful Tips Section -->
+    <section id="tips-section">
+        <div class="container">
+            <h2>Helpful Gas Saving Tips</h2>
+            <p style="color: var(--neutral-muted); font-size: 1.05rem; margin-bottom: 2rem;">Learn practical strategies to reduce fuel consumption and save money on your driving expenses.</p>
+            
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🚗</span> Smooth Acceleration</h3>
+                    <p>Avoid rapid acceleration and hard braking. Gradual, smooth acceleration uses less fuel and improves overall vehicle efficiency. Anticipate stops ahead to brake gently.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🎯</span> Maintain Steady Speed</h3>
+                    <p>Driving at a consistent speed, especially on highways, is more fuel-efficient than frequently changing speeds. Cruise control can help maintain steady velocity and save fuel.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🔧</span> Check Tire Pressure</h3>
+                    <p>Under-inflated tires increase rolling resistance and reduce fuel economy. Check your tire pressure monthly and maintain the recommended PSI found in your vehicle's door jamb or manual.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">📦</span> Remove Excess Weight</h3>
+                    <p>Extra cargo increases fuel consumption. Remove items you don't need for your trip. Even removing roof racks or carriers when not in use can improve fuel efficiency.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🗺️</span> Plan Your Route</h3>
+                    <p>Use GPS or route planning apps to find the shortest or fastest route. Avoiding traffic congestion and unnecessary detours saves fuel, time, and money.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">⏰</span> Avoid Idling</h3>
+                    <p>Idling consumes fuel without moving you forward. Turn off your engine if you're stopped for more than a few minutes. Modern vehicles use less fuel restarting than idling does.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🔍</span> Regular Maintenance</h3>
+                    <p>Keep up with scheduled maintenance including oil changes, air filter replacements, and engine tune-ups. A well-maintained engine runs more efficiently and uses less fuel.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🌡️</span> Use AC Wisely</h3>
+                    <p>Air conditioning significantly increases fuel consumption. Use it only when necessary. At lower speeds, opening windows may be more efficient than using the AC.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h3><span class="tip-icon">🚅</span> Consider Carpooling</h3>
+                    <p>Sharing rides with coworkers or friends splits fuel costs among passengers. Carpooling reduces per-person fuel expenses and helps the environment.</p>
+                </div>
+            </div>
+
+            <!-- Ad Slot 4: Within Tips -->
+            <div class="ad-slot" style="margin-top: 3rem;">Ad Space – Helpful Tips Inline</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="cookies.html">Cookies</a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 Gas Efficiency Planner. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top" onclick="scrollToTop()">↑</button>
+
+    <!-- Analytics Placeholder -->
+    <!-- TODO: Insert analytics script here -->
+
+    <script>
+        // ===== Mobile Navigation Toggle =====
+        const navToggle = document.getElementById('nav-toggle');
+        const navbar = document.getElementById('navbar');
+
+        navToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+            });
+        });
+
+        // ===== Back to Top Button =====
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== Calculator Logic =====
+        const scenarioRadios = document.querySelectorAll('input[name="scenario"]');
+        const commuteSettings = document.getElementById('commute-settings');
+        const customSettings = document.getElementById('custom-settings');
+        const monthlyCostItem = document.getElementById('monthly-cost-item');
+
+        // Show/hide scenario-specific settings
+        scenarioRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                commuteSettings.style.display = e.target.value === 'commute' ? 'block' : 'none';
+                customSettings.style.display = e.target.value === 'custom' ? 'block' : 'none';
+                monthlyCostItem.style.display = e.target.value === 'commute' ? 'block' : 'none';
+            });
+        });
+
+        /**
+         * Calculate gas cost based on user inputs
+         * Validates inputs and displays results or error messages
+         */
+        function calculateGasCost() {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+
+            // Get inputs
+            const mpg = parseFloat(document.getElementById('mpg').value);
+            const gasPrice = parseFloat(document.getElementById('gas-price').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+            const distanceType = document.querySelector('input[name="distance-type"]:checked').value;
+            const scenario = document.querySelector('input[name="scenario"]:checked').value;
+
+            // Validate basic inputs
+            if (!mpg || mpg <= 0) {
+                showError('Please enter a valid MPG above 0.');
+                return;
+            }
+            if (!gasPrice || gasPrice < 0) {
+                showError('Please enter a valid gas price.');
+                return;
+            }
+            if (!distance || distance <= 0) {
+                showError('Please enter a valid distance above 0.');
+                return;
+            }
+
+            // Calculate total distance
+            let totalDistance = distance;
+            if (distanceType === 'round-trip') {
+                totalDistance = distance * 2;
+            }
+
+            // Calculate based on scenario
+            let totalMiles = totalDistance;
+            let multiplier = 1;
+            let scenarioLabel = 'One-time trip';
+
+            if (scenario === 'commute') {
+                const daysPerWeek = parseFloat(document.getElementById('days-per-week').value);
+                const weeksPerMonth = parseFloat(document.getElementById('weeks-per-month').value);
+
+                if (!daysPerWeek || daysPerWeek <= 0 || !weeksPerMonth || weeksPerMonth <= 0) {
+                    showError('Please enter valid days per week and weeks per month.');
+                    return;
+                }
+
+                multiplier = daysPerWeek * weeksPerMonth;
+                scenarioLabel = `${daysPerWeek} days/week × ${weeksPerMonth} weeks/month`;
+            } else if (scenario === 'custom') {
+                totalMiles = parseFloat(document.getElementById('total-miles').value);
+                if (!totalMiles || totalMiles <= 0) {
+                    showError('Please enter a valid total miles value.');
+                    return;
+                }
+                multiplier = 1;
+                scenarioLabel = 'Custom scenario';
+            }
+
+            // Perform calculations
+            const gallonsUsed = (totalDistance * multiplier) / mpg;
+            const totalCost = gallonsUsed * gasPrice;
+            const monthlyCost = scenario === 'commute' ? totalCost : null;
+
+            // Display results
+            displayResults(gallonsUsed, totalCost, monthlyCost, gasPrice, totalDistance, multiplier, scenarioLabel);
+        }
+
+        /**
+         * Display calculation results in a formatted results card
+         */
+        function displayResults(gallonsUsed, totalCost, monthlyCost, gasPrice, distance, multiplier, scenarioLabel) {
+            const resultsDiv = document.getElementById('results');
+            const resultGallons = document.getElementById('result-gallons');
+            const resultCost = document.getElementById('result-cost');
+            const resultMonthly = document.getElementById('result-monthly');
+            const resultsSummary = document.getElementById('results-summary');
+
+            // Update result values
+            resultGallons.textContent = gallonsUsed.toFixed(2);
+            resultCost.textContent = `$${totalCost.toFixed(2)}`;
+
+            // Build summary text
+            let summaryText = `At $${gasPrice.toFixed(2)}/gal, your ${scenarioLabel.toLowerCase()} `;
+
+            if (monthlyCost !== null) {
+                resultMonthly.textContent = `$${monthlyCost.toFixed(2)}`;
+                summaryText += `will cost approximately <strong>$${totalCost.toFixed(2)}</strong> per month and use about <strong>${gallonsUsed.toFixed(2)} gallons</strong> of gas.`;
+            } else {
+                summaryText += `will cost approximately <strong>$${totalCost.toFixed(2)}</strong> and use about <strong>${gallonsUsed.toFixed(2)} gallons</strong> of gas.`;
+            }
+
+            resultsSummary.innerHTML = summaryText;
+            resultsDiv.style.display = 'block';
+
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        /**
+         * Show error message
+         */
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        /**
+         * Reset the form to initial state
+         */
+        function resetForm() {
+            document.getElementById('mpg').value = '';
+            document.getElementById('gas-price').value = '';
+            document.getElementById('distance').value = '';
+            document.getElementById('total-miles').value = '';
+            document.getElementById('days-per-week').value = '5';
+            document.getElementById('weeks-per-month').value = '4';
+            document.querySelector('input[value="trip"]').checked = true;
+            document.querySelector('input[value="one-way"]').checked = true;
+
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error-message').classList.remove('show');
+            document.getElementById('commute-settings').style.display = 'none';
+            document.getElementById('custom-settings').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
